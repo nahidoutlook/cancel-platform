@@ -220,15 +220,15 @@ export default async function ServicePage(
 {/* ============================= */}
 <section 
   id="lead-form" 
-  className="scroll-mt-24 pt-20 pb-28 bg-gradient-to-br from-indigo-100 to-blue-100 relative">
+  className="scroll-mt-24 pt-20 pb-28 bg-gradient-to-br from-white to-blue-100 relative">
 
-  <div className="absolute -top-40 -left-40 w-96 h-96 bg-indigo-200 rounded-full blur-3xl opacity-30"></div>
+  <div className="absolute -top-40 -left-40 w-96 h-96 bg-white-200 rounded-full blur-3xl opacity-30"></div>
   <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-blue-200 rounded-full blur-3xl opacity-30"></div>
 
   {/* Brand Watermark Background Styling */}
 
   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-    <span className="text-[120px] font-bold text-indigo-400 opacity-30 select-none hidden lg:block">
+    <span className="text-[120px] font-bold text-blue-200 opacity-60 select-none hidden lg:block">
       {service.name}
       </span>
   </div>
@@ -269,27 +269,27 @@ export default async function ServicePage(
         <div className="space-y-3">
 
         <div className="flex items-start gap-3 bg-white border rounded-xl p-4 shadow-sm">
-        <span className="text-indigo-600 font-semibold">✔</span>
+        <span className="text-gray-600 font-semibold">✔</span>
         <p>No login or password required</p>
         </div>
 
         <div className="flex items-start gap-3 bg-white border rounded-xl p-4 shadow-sm">
-        <span className="text-indigo-600 font-semibold">✔</span>
+        <span className="text-gray-600 font-semibold">✔</span>
        <p>Avoid future charges</p>
         </div>
 
         <div className="flex items-start gap-3 bg-white border rounded-xl p-4 shadow-sm">
-       <span className="text-indigo-600 font-semibold">✔</span>
+       <span className="text-gray-600 font-semibold">✔</span>
        <p>Billing & renewal issues</p>
         </div>
 
         <div className="flex items-start gap-3 bg-white border rounded-xl p-4 shadow-sm">
-        <span className="text-indigo-600 font-semibold">✔</span>
+        <span className="text-gray-600 font-semibold">✔</span>
         <p>When support is unresponsive</p>
         </div>
 
         <div className="flex items-start gap-3 bg-white border rounded-xl p-4 shadow-sm">
-        <span className="text-indigo-600 font-semibold">✔</span>
+        <span className="text-gray-600 font-semibold">✔</span>
        <p>Privacy-protected form</p>
        </div>
         </div>
@@ -462,7 +462,7 @@ export default async function ServicePage(
 
 
       {/* CallCTA Section */}
-      <section className="py-20 bg-gradient-to-t from-blue-100 to-indigo-100">
+      <section className="py-20 bg-gradient-to-t from-blue-100 to-white">
         <SectionWrapper>
           <div className="max-w-3xl">
             
@@ -483,7 +483,7 @@ export default async function ServicePage(
 
       
       {/* FAQ */}
-        <section className="bg-gradient-to-t from-indigo-50 to-blue-50 pt-16 pb-16">
+        <section className="bg-gradient-to-t from-white to-blue-50 pt-16 pb-16">
         <SectionWrapper>
           <div className="max-w-3xl mx-auto">
             <h2 className="text-3xl font-semibold mb-10 text-center">
@@ -518,7 +518,7 @@ export default async function ServicePage(
       </section>
 
       {/* Disclaimer Section */}
-          <section className="bg-gradient-to-t from-indigo-0 to-blue-10 py-20">
+          <section className="bg-gradient-to-t from-white to-blue-100 py-20">
         
           <div className="max-w-6xl mx-auto px-6 py-6 text-sm text-gray-700">
             <p className="mb-3">
@@ -545,7 +545,7 @@ export default async function ServicePage(
   <div className="hidden lg:block fixed bottom-6 right-6 z-50">
   <a
     href="tel:18005550899"
-    className="bg-indigo-600 text-white px-6 py-4 rounded-full shadow-xl hover:bg-indigo-700 transition font-semibold"
+    className="bg-blue-600 text-white px-6 py-4 rounded-full shadow-xl hover:bg-blue-700 transition font-semibold"
   >
     📞 Need Help? Call Now
   </a>
