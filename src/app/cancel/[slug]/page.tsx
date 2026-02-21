@@ -220,7 +220,7 @@ export default async function ServicePage(
 {/* ============================= */}
 <section 
   id="lead-form" 
-  className="scroll-mt-24 pt-20 pb-28 bg-gradient-to-br from-indigo-200 via-white to-blue-200 relative">
+  className="scroll-mt-24 pt-20 pb-28 bg-gradient-to-br from-indigo-100 to-blue-100 relative">
 
   <div className="absolute -top-40 -left-40 w-96 h-96 bg-indigo-200 rounded-full blur-3xl opacity-30"></div>
   <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-blue-200 rounded-full blur-3xl opacity-30"></div>
@@ -228,7 +228,7 @@ export default async function ServicePage(
   {/* Brand Watermark Background Styling */}
 
   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-    <span className="text-[120px] font-bold text-indigo-200 opacity-30 select-none hidden lg:block">
+    <span className="text-[120px] font-bold text-indigo-400 opacity-30 select-none hidden lg:block">
       {service.name}
       </span>
   </div>
@@ -237,9 +237,6 @@ export default async function ServicePage(
 
   <SectionWrapper>
     <div className="grid lg:grid-cols-12 gap-16 items-start align-start">
-
-
-
 
 
 
@@ -465,7 +462,7 @@ export default async function ServicePage(
 
 
       {/* CallCTA Section */}
-      <section className="py-20 bg-gradient-to-t from-blue-50 via-white to-indigo-50">
+      <section className="py-20 bg-gradient-to-t from-blue-100 to-indigo-100">
         <SectionWrapper>
           <div className="max-w-3xl">
             

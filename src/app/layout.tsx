@@ -15,7 +15,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-background min-h-screen flex flex-col pb-24">
+      <body className="bg-white text-gray-900 min-h-screen flex flex-col pb-24">
         
 
         <TopBar />

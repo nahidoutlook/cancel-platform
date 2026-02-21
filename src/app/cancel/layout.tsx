@@ -9,7 +9,7 @@ export default function CancelLayout({
     <>
     
       {/* This padding creates space for fixed sticky CTA */}
-      <div className="relative pb-24">
+      <div className="min-h-screen bg-white pb-24">
         {children}
       </div>
 
