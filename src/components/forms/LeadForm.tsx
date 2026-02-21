@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "@/lib/supabase";
 
 interface LeadFormProps {
   brandSlug: string;
@@ -21,27 +20,36 @@ export default function LeadForm({ brandSlug, brandName }: LeadFormProps) {
 
     const formData = new FormData(e.currentTarget);
 
-    const { error } = await supabase.from("leads").insert([
-      {
-        name: formData.get("name"),
-        email: formData.get("email"),
-        phone: formData.get("phone"),
-        comments: formData.get("comments"),
-        brand_slug: brandSlug,
-        brand_name: brandName,
-      },
-    ]);
+    try {
+      const res = await fetch("/api/lead", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.get("name"),
+          email: formData.get("email"),
+          phone: formData.get("phone"),
+          comments: formData.get("comments"),
+          brand_slug: brandSlug,
+          brand_name: brandName,
+        }),
+      });
 
-    if (error) {
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error("Submission failed");
+      }
+
+      setSuccess(true);
+      e.currentTarget.reset();
+      setStep(1);
+    } catch (err) {
       setError("Something went wrong. Please try again.");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    setSuccess(true);
-    setLoading(false);
-    e.currentTarget.reset();
-    setStep(1);
   }
 
   if (success) {
@@ -58,9 +66,6 @@ export default function LeadForm({ brandSlug, brandName }: LeadFormProps) {
   return (
     <div className="w-full lg:max-w-md mx-auto bg-white rounded-2xl shadow-lg border border-gray-100 p-8 transition-all duration-300">
 
-
-
-      {/* Header */}
       <div className="mb-6">
         <h3 className="text-xl font-bold text-gray-900">
           Get Help Cancelling {brandName}
@@ -70,7 +75,6 @@ export default function LeadForm({ brandSlug, brandName }: LeadFormProps) {
         </p>
       </div>
 
-      {/* Progress Bar */}
       <div className="mb-6">
         <div className="flex justify-between text-xs text-gray-500 mb-2">
           <span>Step {step} of 2</span>
@@ -88,9 +92,8 @@ export default function LeadForm({ brandSlug, brandName }: LeadFormProps) {
 
       <form onSubmit={handleSubmit} className="space-y-6">
 
-        {/* ================= STEP 1 ================= */}
         {step === 1 && (
-          <div className="space-y-4 animate-fadeIn">
+          <div className="space-y-4">
 
             <div>
               <label className="text-sm font-medium text-gray-700">
@@ -146,9 +149,8 @@ export default function LeadForm({ brandSlug, brandName }: LeadFormProps) {
           </div>
         )}
 
-        {/* ================= STEP 2 ================= */}
         {step === 2 && (
-          <div className="space-y-4 animate-fadeIn">
+          <div className="space-y-4">
 
             <div>
               <label className="text-sm font-medium text-gray-700">
@@ -199,7 +201,6 @@ export default function LeadForm({ brandSlug, brandName }: LeadFormProps) {
       <p className="text-xs text-gray-600 mt-6 text-center">
         🔒 Your information is secure and never shared.
         Submitting this form does not create any paid obligation. If optional paid assistance is available, details will be explained clearly before any charge.
-
       </p>
 
     </div>
