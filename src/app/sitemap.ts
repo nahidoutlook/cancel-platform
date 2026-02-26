@@ -1,27 +1,26 @@
-import type { MetadataRoute } from 'next'
-import { services } from '@/lib/services'
+import type { MetadataRoute } from "next";
+import { services } from "@/data";
+
+const BASE_URL = "https://cancelplatform.vercel.app";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://yourdomain.com'
-
-  const servicePages = services.map((service) => ({
-    url: `${baseUrl}/cancel/${service.slug}`,
+  const staticRoutes = [
+    "",
+    "/about",
+    "/contact",
+  ].map((route) => ({
+    url: `${BASE_URL}${route}`,
     lastModified: new Date(),
-  }))
+    changeFrequency: route === "" ? "weekly" as const : "monthly" as const,
+    priority: route === "" ? 1 : 0.6,
+  }));
 
-  return [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-    },
-    {
-      url: `${baseUrl}/about`,
-      lastModified: new Date(),
-    },
-    {
-      url: `${baseUrl}/contact`,
-      lastModified: new Date(),
-    },
-    ...servicePages,
-  ]
+  const serviceRoutes = services.map((service) => ({
+    url: `${BASE_URL}/cancel/${service.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
+
+  return [...staticRoutes, ...serviceRoutes];
 }

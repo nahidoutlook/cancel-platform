@@ -12,13 +12,17 @@ export default function LeadForm({ brandSlug, brandName }: LeadFormProps) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [message, setMessage] = useState("");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
     setError("");
 
-    const formData = new FormData(e.currentTarget);
+    /*const formData = new FormData(e.currentTarget);*/
 
     try {
       const res = await fetch("/api/lead", {
@@ -27,12 +31,12 @@ export default function LeadForm({ brandSlug, brandName }: LeadFormProps) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: formData.get("name"),
-          email: formData.get("email"),
-          phone: formData.get("phone"),
-          comments: formData.get("comments"),
           brand_slug: brandSlug,
           brand_name: brandName,
+          name,
+          email,
+          phone,
+          message,
         }),
       });
 
@@ -43,13 +47,16 @@ export default function LeadForm({ brandSlug, brandName }: LeadFormProps) {
       }
 
       setSuccess(true);
-      e.currentTarget.reset();
+      setName("");
+      setEmail("");
+      setPhone("");
+      setMessage("");
       setStep(1);
-    } catch (err) {
+      } catch (err) {
       setError("Something went wrong. Please try again.");
-    } finally {
+      } finally {
       setLoading(false);
-    }
+      }
   }
 
   if (success) {
@@ -100,7 +107,8 @@ export default function LeadForm({ brandSlug, brandName }: LeadFormProps) {
                 Full Name
               </label>
               <input
-                name="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 required
                 placeholder="John Doe"
                 className="mt-1 w-full px-4 py-3 rounded-xl border border-gray-300 bg-white shadow-sm
@@ -114,7 +122,8 @@ export default function LeadForm({ brandSlug, brandName }: LeadFormProps) {
                 Email Address
               </label>
               <input
-                name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 type="email"
                 required
                 placeholder="john@email.com"
@@ -129,7 +138,8 @@ export default function LeadForm({ brandSlug, brandName }: LeadFormProps) {
                 Phone Number (Optional)
               </label>
               <input
-                name="phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
                 placeholder="(555) 000-0000"
                 className="mt-1 w-full px-4 py-3 rounded-xl border border-gray-300 bg-white shadow-sm
                 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
@@ -157,7 +167,8 @@ export default function LeadForm({ brandSlug, brandName }: LeadFormProps) {
                 Additional Comments
               </label>
               <textarea
-                name="comments"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
                 rows={4}
                 required
                 placeholder={`Describe your issue cancelling ${brandName}...`}

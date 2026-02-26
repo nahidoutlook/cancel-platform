@@ -3,11 +3,11 @@ import type { Metadata } from "next";
 import SectionWrapper from "@/components/layout/SectionWrapper";
 import CallCTA from "@/components/marketing/CallCTA";
 import LeadForm from "@/components/forms/LeadForm";
-import { services } from "@/lib/services";
+import { services } from "@/data";
 import ExitIntentPopup from "@/components/marketing/ExitIntentPopup";
 import FaqAccordion from "@/components/marketing/FaqAccordion";
 import LiveTicker from "@/components/marketing/LiveTicker";
-
+import { createSupabaseAdmin } from "@/lib/supabase/admin";
 
 
 import Link from "next/link";
@@ -33,11 +33,14 @@ interface PageProps {
 /* ============================= */
 /* Static Generation */
 /* ============================= */
-export async function generateStaticParams() {
+const BASE_URL = "https://cancelplatform.vercel.app";
+export const dynamic = "force-dynamic";
+
+{/*  export async function generateStaticParams() {
   return services.map((service) => ({
     slug: service.slug,
   }));
-}
+} */}
 
 /* ============================= */
 /* Dynamic Metadata */
@@ -47,44 +50,53 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await params;
 
-  const normalizedSlug = slug.toLowerCase();
+  const normalizedSlug = slug?.toLowerCase?.() ?? "";
 
-  const service = services.find(
-    (s) => s.slug === normalizedSlug
-  );
+  const supabase = createSupabaseAdmin();
+
+    const { data: dbBrand } = await supabase
+  .from("brands")
+  .select("*")
+  .eq("slug", normalizedSlug)
+  .eq("is_published", true)
+  .single();
+
+// If brand exists in DB use it
+           let service = dbBrand
+        ? {
+      name: dbBrand.name,
+      slug: dbBrand.slug,
+      category: dbBrand.category || "other",
+          }
+      : services.find((s) => s.slug === normalizedSlug);
 
   if (!service) {
-    return {
-      title: "Service Not Found | Cancel Platform",
-    };
-  }
+           return {
+              title: "Service Not Found | Cancel Platform",
+              };
+                }
 
   return {
-    title: `How to Cancel ${service.name} (2026 Guide) | Cancel Platform`,
-    description: `Independent step-by-step guide explaining how to cancel ${service.name} subscriptions and manage recurring billing.`,
-    robots: {
+  title: `How to Cancel ${service.name} Subscription (2026 Guide) | Cancel Platform`,
+  description: `Step-by-step guide explaining how to cancel ${service.name} subscription and manage recurring billing in the USA.`,
+
+  robots: {
     index: true,
     follow: true,
   },
-    
-    
-    
-    alternates: {
-      canonical: `https://yourdomain.com/cancel/${normalizedSlug}`
 
-      
+  alternates: {
+    canonical: `${BASE_URL}/cancel/${normalizedSlug}`,
+  },
 
-
-      
-
-    },
-    openGraph: {
-      title: `How to Cancel ${service.name}`,
-      description: `Complete cancellation guide for ${service.name}.`,
-      url: `https://yourdomain.com/cancel/${normalizedSlug}`,
-      type: "article",
-    },
-  };
+  openGraph: {
+    title: `How to Cancel ${service.name}`,
+    description: `Complete cancellation guide for ${service.name}.`,
+    url: `${BASE_URL}/cancel/${normalizedSlug}`,
+    type: "article",
+    siteName: "Cancel Platform",
+  },
+};
 }
 
 
@@ -99,13 +111,30 @@ export default async function ServicePage(
 
   const normalizedSlug = slug.toLowerCase();
 
-  const service = services.find(
-    (s) => s.slug === normalizedSlug
-  );
+  const supabase = createSupabaseAdmin();
 
-  if (!service) return notFound();
+const { data: dbBrand } = await supabase
+  .from("brands")
+  .select("*")
+  .eq("slug", normalizedSlug)
+  .eq("is_published", true)
+  .single();
 
-  
+let service;
+
+if (dbBrand) {
+  service = {
+    name: dbBrand.name,
+    slug: dbBrand.slug,
+    category: dbBrand.category || "other",
+  };
+} else {
+  service = services.find((s) => s.slug === normalizedSlug);
+}
+
+if (!service) {
+  return notFound();
+}
   
   
 
@@ -153,38 +182,52 @@ export default async function ServicePage(
         "@type": "ListItem",
         position: 1,
         name: "Home",
-        item: "https://yourdomain.com",
+        item: BASE_URL,
       },
       {
         "@type": "ListItem",
         position: 2,
         name: "Cancel",
-        item: "https://yourdomain.com/cancel",
+        item: `${BASE_URL}/cancel`,
       },
       {
         "@type": "ListItem",
         position: 3,
         name: service.name,
-        item: `https://yourdomain.com/cancel/${normalizedSlug}`,
+        item: `${BASE_URL}/cancel/${normalizedSlug}`,
       },
     ],
   };
 
+  const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  name: `How to Cancel ${service.name}`,
+  description: `Step-by-step cancellation guide for ${service.name}.`,
+  provider: {
+    "@type": "Organization",
+    name: "Cancel Platform",
+    url: BASE_URL,
+  },
+};
+
   return (
     <>
       {/* Structured Data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(faqSchema),
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(breadcrumbSchema),
-        }}
-      />
+      <script 
+      type="application/ld+json"
+       dangerouslySetInnerHTML={{ 
+        __html: JSON.stringify(breadcrumbSchema) }} />
+
+      <script 
+      type="application/ld+json"
+       dangerouslySetInnerHTML={{ 
+        __html: JSON.stringify(howToSchema) }} />
+
+        <script
+         type="application/ld+json"
+          dangerouslySetInnerHTML={{ 
+            __html: JSON.stringify(faqSchema) }} />
 
 
 {/* Breadcrumb */}
@@ -480,6 +523,29 @@ export default async function ServicePage(
         
 
       </section>
+
+      <h2 className="text-2xl font-bold mt-16 mb-6">
+  Related Services
+</h2>
+
+<div className="grid md:grid-cols-3 gap-4">
+  {services
+    .filter(
+      (s) =>
+        s.category === service.category &&
+        s.slug !== service.slug
+    )
+    .slice(0, 6)
+    .map((related) => (
+      <Link
+        key={related.slug}
+        href={`/cancel/${related.slug}`}
+        className="border rounded-lg p-4 hover:shadow"
+      >
+        Cancel {related.name}
+      </Link>
+    ))}
+</div>
 
       
       {/* FAQ */}

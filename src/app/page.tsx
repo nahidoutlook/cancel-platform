@@ -1,8 +1,19 @@
 import SectionWrapper from "@/components/layout/SectionWrapper";
 import CallCTA from "@/components/marketing/CallCTA";
+import CategorySection from "@/components/home/CategorySection";
 import Link from "next/link";
-import { services } from "@/lib/services";
+import { services } from "@/data";
 import LeadForm from "@/components/forms/LeadForm";
+
+const BASE_URL = "https://cancelplatform.vercel.app";
+
+
+export const metadata = {
+  title: "Cancel Subscriptions Easily | 500+ Services Covered",
+  description:
+    "Step-by-step subscription cancellation guides for Netflix, Amazon, gyms, apps, insurance, and more. Fast, simple, and secure cancellation help.",
+};
+
 
 
 
@@ -11,6 +22,19 @@ import LeadForm from "@/components/forms/LeadForm";
 export default function HomePage() {
   return (
     <div className="space-y-20 pb-20">
+
+
+      <script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: "Cancel Platform",
+      url: BASE_URL,
+    }),
+  }}
+/>
 
       {/* HERO */}
       <section className="relative overflow-hidden pt-24 pb-28">
@@ -30,13 +54,20 @@ export default function HomePage() {
             </p>
 
             <div className="flex justify-center gap-4 pt-4">
-              <button className="bg-primary text-primary-foreground px-7 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg hover:opacity-95 transition-all">
-                Browse Services
-              </button>
+              <Link
+                  href="/cancel"
+                className="bg-primary text-primary-foreground px-7 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg hover:opacity-95 transition-all"
+                      >
+                  Browse Services
+              </Link>
 
-              <button className="border border-border px-7 py-3 rounded-xl font-semibold hover:bg-secondary transition">
-                How It Works
-              </button>
+                <Link
+                   href="#how-it-works"
+                   className="border border-border px-7 py-3 rounded-xl font-semibold hover:bg-secondary transition"
+                    >
+                    How It Works
+                  </Link>
+             
             </div>
           </div>
         </SectionWrapper>
@@ -74,37 +105,7 @@ export default function HomePage() {
       {/* CATEGORIES */}
       <section className="py-24">
         <SectionWrapper>
-          <div className="text-center mb-14">
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
-              Browse by Category
-            </h2>
-            <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
-              Find step-by-step cancellation guides organized by industry.
-            </p>
-          </div>
-
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              { name: "Streaming", desc: "Netflix, Hulu, Disney+, Prime Video..." },
-              { name: "Software", desc: "Adobe, Microsoft, Dropbox, Zoom..." },
-              { name: "Fitness", desc: "Planet Fitness, ClassPass, Gym apps..." },
-              { name: "Finance", desc: "Credit monitoring, budgeting apps..." },
-              { name: "Shopping", desc: "Amazon, subscription boxes..." },
-              { name: "Gaming", desc: "Xbox, PlayStation, online games..." },
-            ].map((cat) => (
-              <div
-                key={cat.name}
-                className="group border border-border rounded-2xl p-8 bg-card hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer"
-              >
-                <h3 className="text-xl font-semibold mb-3 group-hover:text-primary transition">
-                  {cat.name}
-                </h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  {cat.desc}
-                </p>
-              </div>
-            ))}
-          </div>
+          <CategorySection />
         </SectionWrapper>
       </section>
 
@@ -120,28 +121,35 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {services.map((service) => (
-              <Link
-                href={`/cancel/${service.slug}`}
-                key={service.slug}
-              >
-                <div className="group bg-card border border-border rounded-xl p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer">
-                  <div className="h-10 w-10 rounded-lg bg-primary/10 mb-4 flex items-center justify-center text-primary font-bold">
-                    {service.name.charAt(0)}
+          <div className="overflow-hidden bg-card rounded-lg py-6 w-full">
+            <style>{`
+              @keyframes scroll {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(-50%); }
+              }
+              .marquee-container {
+                display: flex;
+                animation: scroll 80s linear infinite;
+                width: fit-content;
+              }
+              .marquee-container:hover {
+                animation-play-state: paused;
+              }
+            `}</style>
+            <div className="marquee-container gap-3 flex">
+              {[...services, ...services].map((service, index) => (
+                <Link
+                  href={`/cancel/${service.slug}`}
+                  key={`${service.slug}-${index}`}
+                >
+                  <div className="group bg-white border border-border rounded-md p-3 hover:shadow-sm transition-all duration-300 cursor-pointer flex-shrink-0 whitespace-nowrap">
+                    <h3 className="text-sm font-semibold group-hover:text-primary transition">
+                      {service.name}
+                    </h3>
                   </div>
-
-                  <h3 className="font-semibold group-hover:text-primary transition">
-                    {service.name}
-                  </h3>
-
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Step-by-step cancellation guide
-                  </p>
-                </div>
-              </Link>
-              
-            ))}
+                </Link>
+              ))}
+            </div>
           </div>
         </SectionWrapper>
         

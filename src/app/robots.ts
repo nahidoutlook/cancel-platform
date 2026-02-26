@@ -1,11 +1,13 @@
-import type { MetadataRoute } from 'next'
+import { MetadataRoute } from "next";
+
+const BASE_URL = "https://cancelplatform.vercel.app";
 
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
-      userAgent: '*',
-      allow: '/',
+      userAgent: "*",
+      allow: "/",
     },
-    sitemap: 'https://yourdomain.com/sitemap.xml',
-  }
+    sitemap: `${BASE_URL}/sitemap.xml`,
+  };
 }
