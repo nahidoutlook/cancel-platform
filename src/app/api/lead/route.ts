@@ -7,19 +7,25 @@ export async function POST(req: Request) {
     const body = await req.json();
     const supabase = getSupabaseClient();
 
+    // ✅ IMPORTANT: headers() must be awaited in your Next version
     const headerList = await headers();
 
-    const ip =
-      headerList.get("x-forwarded-for") ||
-      headerList.get("x-real-ip") ||
-      "unknown";
+    // ✅ IP Address
+    const forwarded = headerList.get("x-forwarded-for");
+    const ip = forwarded?.split(",")[0] || "127.0.0.1";
 
+    // ✅ Country (Vercel / Cloudflare support)
+    const country =
+      headerList.get("x-vercel-ip-country") ||
+      headerList.get("cf-ipcountry") ||
+      "Local";
+
+    // ✅ Device Detection
     const userAgent = headerList.get("user-agent") || "";
-
     let device = "desktop";
 
     if (/mobile/i.test(userAgent)) device = "mobile";
-    if (/tablet/i.test(userAgent)) device = "tablet";
+    else if (/tablet|ipad/i.test(userAgent)) device = "tablet";
 
     const { error } = await supabase.from("leads").insert([
       {
@@ -31,7 +37,8 @@ export async function POST(req: Request) {
         message: body.message || "",
         ip,
         device,
-        location: null, // we’ll enhance later
+        location: country, // ✅ now saving country
+        status: "new", // (make sure column exists)
       },
     ]);
 
