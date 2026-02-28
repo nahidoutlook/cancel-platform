@@ -28,8 +28,8 @@ export default function LoginPage() {
     }
 
     // Important: refresh so server reads cookie
-    router.refresh();
     router.push("/admin");
+router.refresh();
   }
 
   return (
