@@ -103,9 +103,11 @@ export default async function LeadsPage({
       return acc;
     }, {}) || {};
 
-  const topSpamIps = Object.entries(spamIpStats)
-    .sort((a: any, b: any) => (b[1] as number) - (a[1] as number))
-    .slice(0, 5);
+  const topSpamIps: [string, number][] = Object.entries(
+  spamIpStats as Record<string, number>
+)
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 5);
 
   /* ===================== SEARCH + FILTER + PAGINATION ===================== */
 
@@ -162,11 +164,13 @@ export default async function LeadsPage({
 
         <ul className="text-sm space-y-1">
           {topSpamIps.map(([ip, count]) => (
-            <li key={ip} className="flex justify-between">
-              <span>{ip}</span>
-              <span className="text-red-600 font-bold">{count}</span>
-            </li>
-          ))}
+  <li key={ip} className="flex justify-between">
+    <span>{ip}</span>
+    <span className="text-red-600 font-bold">
+      {Number(count)}
+    </span>
+  </li>
+))}
         </ul>
       </div>
 
