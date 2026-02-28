@@ -20,6 +20,16 @@ export default async function ProtectedLayout({
 
   const userEmail = session.user.email;
 
+  const { data: roleData, error: roleError } = await supabase
+  .from("user_roles")
+  .select("role")
+  .eq("id", session.user.id)
+  .single();
+
+if (roleError || !roleData || roleData.role !== "admin") {
+  redirect("/admin/login");
+}
+
   return (
     <div className="min-h-screen flex bg-gray-100">
       {/* Sidebar */}
