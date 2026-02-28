@@ -11,19 +11,20 @@ export default async function ProtectedLayout({
   const supabase = await createSupabaseServerClient();
 
   const {
-  data: { session },
-} = await supabase.auth.getSession();
+  data: { user },
+  error: userError,
+} = await supabase.auth.getUser();
 
-if (!session) {
+if (userError || !user) {
   redirect("/admin/login");
 }
 
-const userEmail = session.user.email;
+const userEmail = user.email;
 
   const { data: roleData, error: roleError } = await supabase
   .from("user_roles")
   .select("role")
-  .eq("id", session.user.id)
+  .eq("id", user.id)
   .single();
 
 if (roleError || !roleData || roleData.role !== "admin") {
