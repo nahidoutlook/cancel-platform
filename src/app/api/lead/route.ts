@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
-import { getSupabaseClient } from "@/lib/supabase/client";
+import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const supabase = getSupabaseClient();
 
-    // ✅ IMPORTANT: headers() must be awaited in your Next version
+    // ✅ Use SERVER client (important)
+    const supabase = await createSupabaseServerClient();
+
     const headerList = await headers();
 
     // ✅ IP Address
@@ -37,8 +38,8 @@ export async function POST(req: Request) {
         message: body.message || "",
         ip,
         device,
-        location: country, // ✅ now saving country
-        status: "new", // (make sure column exists)
+        location: country,
+        status: "new",
       },
     ]);
 
